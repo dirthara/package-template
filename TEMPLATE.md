@@ -2,8 +2,10 @@
 
 The scaffold every Dirthara package starts from: the Docker development
 environment, the Mago and PHPUnit configuration, the CI workflow with its
-single required `CI` check, the 100% coverage gate, the branch-per-version
-contributing rules, and the agent instructions.
+single required `CI` check and its actions pinned to commit SHAs, the 100%
+coverage gate, the Dependabot configuration, the `.gitattributes` that keeps
+development files out of a release, the branch-per-version contributing rules,
+and the agent instructions.
 
 This file and `bin/` are the only parts that are not part of a package. The
 init script deletes both once it has run.
