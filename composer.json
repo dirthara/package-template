@@ -2,6 +2,7 @@
     "name": "dirthara/__PACKAGE__",
     "description": "__DESCRIPTION__",
     "type": "library",
+    "homepage": "https://dirthara.github.io/docs/",
     "require": {
         "php": "^8.5"
     },
@@ -24,6 +25,11 @@
             "name": "Dirthara"
         }
     ],
+    "support": {
+        "docs": "https://dirthara.github.io/docs/",
+        "issues": "https://github.com/dirthara/__PACKAGE__/issues",
+        "source": "https://github.com/dirthara/__PACKAGE__"
+    },
     "prefer-stable": true,
     "config": {
         "sort-packages": true

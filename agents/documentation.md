@@ -10,7 +10,10 @@ The root README covers the repository, not the library. It contains, in order:
    path. A relative path survives the branch-per-version strategy; an absolute
    `raw.githubusercontent.com` URL would name one branch and be wrong on every
    other.
-2. A short description of the package.
+2. A short description of the package, linking to the global documentation
+   site at `https://dirthara.github.io/docs/`. Every package points there for
+   usage documentation, so a reader who lands on any repository finds the whole
+   framework's documentation from it.
 3. How to install the package with Composer, and its requirements.
 4. How to set up the local development environment.
 5. How to run the tests.
@@ -39,9 +42,15 @@ against, and update it when those defences change.
 
 ## docs/
 
-The `docs` directory holds the usage documentation as markdown files. Another
-package reads these files and builds a documentation website with Docusaurus, so
-write them as if they are already part of a Docusaurus site.
+The `docs` directory holds the usage documentation as markdown files. The
+`dirthara/docs` package reads these files and builds the global documentation
+site published at `https://dirthara.github.io/docs/` with Docusaurus, so write
+them as if they are already part of that site.
+
+That site is the single home of the framework's documentation: the package
+never publishes its own site, and `README.md`, `composer.json` (`homepage` and
+`support.docs`), and any prose that sends a reader to the documentation all
+point at `https://dirthara.github.io/docs/`.
 
 That means:
 

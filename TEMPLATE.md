@@ -8,6 +8,10 @@ contributing rules, and the agent instructions.
 This file and `bin/` are the only parts that are not part of a package. The
 init script deletes both once it has run.
 
+The template itself is not a versioned package, so it has a single `main`
+branch. The branch-per-version strategy in `CONTRIBUTING.md` describes the
+packages created from the scaffold, which still start on `0.1`.
+
 ## Creating a package
 
 Either use this repository as a GitHub template, or copy the directory. A
@@ -60,8 +64,10 @@ and adds `git@github.com:dirthara/<package>` as `origin`. It never commits.
    ```sh
    scripts/protect-branch.sh 0.1
    ```
-5. **Register the package** in the documentation site by adding it to
-   `sources.json` in `dirthara/docs`.
+5. **Register the package** in the global documentation site at
+   <https://dirthara.github.io/docs/> by adding it to `sources.json` in
+   `dirthara/docs`. Every package documents itself there rather than publishing
+   a site of its own, and `README.md` and `composer.json` already link to it.
 
 ## Packages that do not touch a database
 

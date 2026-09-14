@@ -6,8 +6,9 @@
 
 __DESCRIPTION__. This repository is the initial package
 scaffold; no public API or release is available yet. Usage documentation lives
-in [`docs`](docs/intro.md), prepared for the shared Docusaurus documentation
-site.
+in [`docs`](docs/intro.md) and is published on the Dirthara documentation site
+at <https://dirthara.github.io/docs/>, which documents every package in the
+framework.
 
 ## Installation
 
