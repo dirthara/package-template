@@ -1,0 +1,62 @@
+{
+    "name": "dirthara/__PACKAGE__",
+    "description": "__DESCRIPTION__",
+    "type": "library",
+    "require": {
+        "php": "^8.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Dirthara\\__NAMESPACE__\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Dirthara\\__NAMESPACE__\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dirthara"
+        }
+    ],
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "mago": "sh scripts/mago.sh",
+        "fmt": [
+            "mago fmt",
+            "@imports"
+        ],
+        "fmt-check": [
+            "mago fmt --check",
+            "@imports-check"
+        ],
+        "lint": "mago lint",
+        "lint-fix": "mago lint --fix --potentially-unsafe",
+        "analyze": "mago analyze",
+        "guard": "mago guard",
+        "test": "sh scripts/when-source-exists.sh phpunit",
+        "test-coverage": "XDEBUG_MODE=coverage sh scripts/when-source-exists.sh phpunit --coverage-clover=build/coverage/clover.xml",
+        "coverage": "sh scripts/when-source-exists.sh php scripts/coverage.php build/coverage/clover.xml 100",
+        "cs": [
+            "@lint-fix",
+            "@fmt"
+        ],
+        "ci": [
+            "@mago",
+            "@test-tools",
+            "@test-coverage",
+            "@coverage"
+        ],
+        "imports": "@php scripts/sort-imports.php",
+        "imports-check": "@php scripts/sort-imports.php --check",
+        "test-tools": "@php scripts/tests/sort-imports.php"
+    }
+}
