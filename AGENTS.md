@@ -26,6 +26,11 @@ the PostgreSQL, MySQL, and SQL Server services the tests run against, and waits 
 Use the `Dirthara\__NAMESPACE__` namespace for source and `Dirthara\__NAMESPACE__\Tests` for tests. Declare strict 
 types in every PHP file.
 
+## Language
+Write everything in British English: names, messages, comments, documentation, and commit messages. Read and follow 
+https://github.com/dirthara/coding-standards/blob/main/docs/coding-standards/cs-2-naming-conventions.md#3-language for 
+names fixed by PHP, dependencies, or tools.
+
 ## Exceptions
 Read and follow https://github.com/dirthara/coding-standards/blob/main/docs/coding-standards/cs-7-exceptions-error-handling.md when creating or modifying exceptions.
 Every exception implements `Dirthara\__NAMESPACE__\Exception\__NAMESPACE__Exception` and uses the 

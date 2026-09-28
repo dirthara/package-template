@@ -113,3 +113,43 @@ enabled = false
 
 [linter.rules.too-many-properties]
 enabled = false
+
+# The package depends on nothing beyond PHP; add a dependency here when the package requires one. Tests may use
+# anything.
+[[guard.perimeter.rules]]
+namespace = "Dirthara\\__NAMESPACE__\\"
+permit = ["@native", "Dirthara\\__NAMESPACE__\\**"]
+
+[[guard.perimeter.rules]]
+namespace = "Dirthara\\__NAMESPACE__\\Tests\\"
+permit = ["@all"]
+
+# CS-1 §15: classes are final.
+[[guard.structural.rules]]
+on = "Dirthara\\__NAMESPACE__\\**"
+target = "class"
+must-be-final = true
+reason = "Classes are final (CS-1 §15)."
+
+[[guard.structural.rules]]
+on = "Dirthara\\__NAMESPACE__\\Contract\\**"
+must-be = ["interface"]
+reason = "The Contract namespace holds only interfaces."
+
+# CS-7: every exception implements the package interface and carries its context through the shared trait.
+[[guard.structural.rules]]
+on = "Dirthara\\__NAMESPACE__\\Exception\\**"
+target = "class"
+must-be-named = "*Exception"
+must-implement = "Dirthara\\__NAMESPACE__\\Exception\\__NAMESPACE__Exception"
+must-use-trait = "Dirthara\\__NAMESPACE__\\Exception\\HasExceptionContext"
+reason = "Package exceptions implement __NAMESPACE__Exception and use HasExceptionContext (CS-7)."
+
+# CS-3: test classes are suffixed with Test.
+[[guard.structural.rules]]
+on = "Dirthara\\__NAMESPACE__\\Tests\\**"
+not-on = "Dirthara\\__NAMESPACE__\\Tests\\Fixtures\\**"
+target = "class"
+must-be-named = "*Test"
+must-extend = "PHPUnit\\Framework\\TestCase"
+reason = "Test classes are PHPUnit test cases suffixed with Test (CS-3)."

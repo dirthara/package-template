@@ -55,6 +55,10 @@ It adds the exception setup that CS-7 requires, from `bin/stubs`:
 | `tests/Exception/HasExceptionContextTest.php` | Its tests, which keep coverage at 100% |
 | `tests/Fixtures/ContextualException.php` | The exception the tests use |
 
+The right import order in those files depends on how long the namespace is, so
+the script sorts the imports afterwards, following the same rule as
+`composer imports`.
+
 Then, unless `--no-git` is given, it initialises the repository on branch `0.1`,
 sets `bricknpc <bricknpc@proton.me>` as the local identity, turns on GPG
 signing for commits and tags using the key from your global git configuration,
@@ -65,7 +69,10 @@ and adds `git@github.com:dirthara/<package>` as `origin`. It never commits.
 1. **Add the dependencies** to `composer.json`. The template requires only
    `php: ^8.5` and `phpunit/phpunit: ^12.0`. A package that talks to a database
    also adds `ext-pdo`, `dirthara/database`, and a `suggest` block naming the
-   PDO driver extensions, the way `dirthara/schema` does.
+   PDO driver extensions, the way `dirthara/schema` does. Permit each runtime
+   dependency's namespace in the first `[[guard.perimeter.rules]]` entry of
+   `mago.toml` as well, because the guard allows only PHP and the package's own
+   namespace by default.
 2. **Generate `composer.lock`**, which the first commit includes:
    ```sh
    LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose up -d --build php

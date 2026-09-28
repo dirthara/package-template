@@ -117,6 +117,45 @@ echo "$files" | while IFS= read -r file; do
         "$file"
 done
 
+# The namespace length decides the import order the stubs need, so sort each
+# block of imports the way scripts/sort-imports.php does: by length, then
+# case-insensitively, then bytewise. Done in awk because the host may have no
+# PHP; the stubs only use single-line imports without comments.
+sort_imports() {
+    LC_ALL=C awk '
+        function kind(line) {
+            if (line ~ /^use function /) return "function"
+            if (line ~ /^use const /) return "const"
+            return "class"
+        }
+        function before(a, b) {
+            if (length(a) != length(b)) return length(a) < length(b)
+            if (tolower(a) != tolower(b)) return tolower(a) < tolower(b)
+            return a < b
+        }
+        function flush(    i, j, line) {
+            for (i = 2; i <= n; i++) {
+                line = block[i]
+                for (j = i - 1; j >= 1 && before(line, block[j]); j--) block[j + 1] = block[j]
+                block[j + 1] = line
+            }
+            for (i = 1; i <= n; i++) print block[i]
+            n = 0
+        }
+        /^use [^;]*;$/ {
+            if (n > 0 && kind($0) != kind(block[n])) flush()
+            block[++n] = $0
+            next
+        }
+        { if (n > 0) flush(); print }
+        END { if (n > 0) flush() }
+    ' "$1" > "$1.sorted" && mv "$1.sorted" "$1"
+}
+
+find src tests -type f -name '*.php' | while IFS= read -r file; do
+    sort_imports "$file"
+done
+
 rm -rf TEMPLATE.md bin
 
 echo "Initialised dirthara/${package} (Dirthara\\${namespace})."
