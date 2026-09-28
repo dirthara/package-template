@@ -8,7 +8,9 @@ development files out of a release, the branch-per-version contributing rules,
 and the agent instructions.
 
 This file and `bin/` are the only parts that are not part of a package. The
-init script deletes both once it has run.
+init script deletes both once it has run. `bin/stubs` holds the files the
+script adds to every package, with the same placeholders as the rest of the
+scaffold.
 
 The template itself is not a versioned package, so it has a single `main`
 branch. The branch-per-version strategy in `CONTRIBUTING.md` describes the
@@ -44,7 +46,16 @@ That rewrites four placeholders across the scaffold:
 | `__DESCRIPTION__` | The one-line description | `Migrations for the Dirthara framework` |
 | `__YEAR__` | The copyright year | `2026` |
 
-and, unless `--no-git` is given, initialises the repository on branch `0.1`,
+It adds the exception setup that CS-7 requires, from `bin/stubs`:
+
+| File | Contains |
+| --- | --- |
+| `src/Exception/<Namespace>Exception.php` | The package exception interface, with `$context` and `addContext()` |
+| `src/Exception/HasExceptionContext.php` | The trait that implements both, and `printable()` for quoting values in messages |
+| `tests/Exception/HasExceptionContextTest.php` | Its tests, which keep coverage at 100% |
+| `tests/Fixtures/ContextualException.php` | The exception the tests use |
+
+Then, unless `--no-git` is given, it initialises the repository on branch `0.1`,
 sets `bricknpc <bricknpc@proton.me>` as the local identity, turns on GPG
 signing for commits and tags using the key from your global git configuration,
 and adds `git@github.com:dirthara/<package>` as `origin`. It never commits.

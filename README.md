@@ -61,9 +61,8 @@ driver. SQLite runs in memory and always runs; the PostgreSQL, MySQL, and SQL Se
 is missing, and read their connection from `DIRTHARA_POSTGRES_*`, `DIRTHARA_MYSQL_*`, and `DIRTHARA_SQLSRV_*` 
 (`_HOST`, `_PORT`, `_DATABASE`, `_USERNAME`, `_PASSWORD`), defaulting to the services in `compose.yaml`.
 
-The initial scaffold has no PHP source or tests. Test and coverage commands explicitly report that checks are not 
-applicable while both directories contain no PHP files. As soon as either contains PHP files, PHPUnit and the coverage
-gate run normally; an empty test suite fails.
+The package starts with its exception interface, `Dirthara\__NAMESPACE__\Exception\__NAMESPACE__Exception`, and the 
+`HasExceptionContext` trait every exception uses to carry its context, both covered by tests.
 
 ## Code quality
 

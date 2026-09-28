@@ -11,6 +11,10 @@
 #   <description>   One line, no trailing period. It becomes the Composer
 #                   description and the opening line of the README and docs.
 #
+# Besides the placeholders, it adds the exceptions CS-7 requires: the package
+# exception interface "<Namespace>Exception", the HasExceptionContext trait
+# that implements it, and their tests, from the stubs in bin/stubs.
+#
 # Options:
 #   --namespace <Name>  PHP namespace after "Dirthara\". Defaults to the
 #                       package name in StudlyCase.
@@ -29,7 +33,7 @@ GIT_EMAIL="${DIRTHARA_GIT_EMAIL:-bricknpc@proton.me}"
 BRANCH="${DIRTHARA_BRANCH:-0.1}"
 
 usage() {
-    sed -n '3,23p' "$0" | cut -c 3-
+    sed -n '3,27p' "$0" | cut -c 3-
     exit "${1:-1}"
 }
 
@@ -78,6 +82,15 @@ if ! grep -rq '__PACKAGE__' . --exclude-dir=.git --exclude-dir=bin 2>/dev/null; 
     exit 1
 fi
 
+# The CS-7 exception setup. Copied before the placeholders are replaced, so the
+# stubs are rewritten with everything else.
+(cd bin/stubs && find . -type f) | while IFS= read -r stub; do
+    target=$(printf '%s' "$stub" | sed "s|__NAMESPACE__|${namespace}|g")
+    mkdir -p "$(dirname -- "$target")"
+    cp "bin/stubs/$stub" "$target"
+done
+rm -f src/.gitkeep tests/.gitkeep
+
 escape() {
     printf '%s' "$1" | sed -e 's/[&|\\]/\\&/g'
 }
@@ -104,10 +117,10 @@ echo "$files" | while IFS= read -r file; do
         "$file"
 done
 
-rm -f TEMPLATE.md bin/init-package.sh
-rmdir bin 2>/dev/null || true
+rm -rf TEMPLATE.md bin
 
 echo "Initialised dirthara/${package} (Dirthara\\${namespace})."
+echo "Added Dirthara\\${namespace}\\Exception\\${namespace}Exception and HasExceptionContext."
 
 if [ "$git_setup" -eq 0 ]; then
     echo "Skipped git setup (--no-git)."

@@ -17,8 +17,7 @@ and say what is ready.
 
 ## Tests
 Line coverage of `src` must stay at 100%; `composer coverage` fails below it and lists the uncovered lines. Add tests 
-in `tests` with every implementation change. The empty scaffold explicitly skips tests and coverage until PHP files 
-exist in `src` or `tests`; after that, the full checks are required. Behaviour that needs a real database belongs in 
+in `tests` with every implementation change. Behaviour that needs a real database belongs in 
 the shared conformance suite in `tests/Integration`, not in a copy per driver.
 
 ## Development
@@ -29,6 +28,8 @@ types in every PHP file.
 
 ## Exceptions
 Read and follow https://github.com/dirthara/coding-standards/blob/main/docs/coding-standards/cs-7-exceptions-error-handling.md when creating or modifying exceptions.
+Every exception implements `Dirthara\__NAMESPACE__\Exception\__NAMESPACE__Exception` and uses the 
+`HasExceptionContext` trait for its context.
 
 ## Documentation
 Read and follow https://github.com/dirthara/coding-standards/blob/main/docs/coding-standards/cs-6-documentation.md when writing the README or anything in `docs`.
