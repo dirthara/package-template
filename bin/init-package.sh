@@ -19,6 +19,9 @@
 #   --namespace <Name>  PHP namespace after "Dirthara\". Defaults to the
 #                       package name in StudlyCase.
 #   --year <YYYY>       Copyright year. Defaults to the current year.
+#   --no-database       For a package that never touches a database: leave out
+#                       the database services, the PDO extensions, and the
+#                       database sections of the documentation.
 #   --no-git            Only rewrite the placeholders; leave git alone.
 #
 # Git, unless --no-git is given: initialises the repository on branch 0.1 if it
@@ -33,7 +36,7 @@ GIT_EMAIL="${DIRTHARA_GIT_EMAIL:-bricknpc@proton.me}"
 BRANCH="${DIRTHARA_BRANCH:-0.1}"
 
 usage() {
-    sed -n '3,27p' "$0" | cut -c 3-
+    sed -n '3,30p' "$0" | cut -c 3-
     exit "${1:-1}"
 }
 
@@ -41,12 +44,14 @@ package=""
 description=""
 namespace=""
 year=""
+database=1
 git_setup=1
 
 while [ $# -gt 0 ]; do
     case "$1" in
         --namespace) namespace="${2:-}"; shift 2 ;;
         --year) year="${2:-}"; shift 2 ;;
+        --no-database) database=0; shift ;;
         --no-git) git_setup=0; shift ;;
         -h|--help) usage 0 ;;
         -*) echo "Unknown option: $1" >&2; usage ;;
@@ -156,10 +161,46 @@ find src tests -type f -name '*.php' | while IFS= read -r file; do
     sort_imports "$file"
 done
 
+# Database-only parts of the scaffold sit between marker lines inside comments:
+# "@database" to "@end-database" for what only a database package keeps, and
+# "@no-database" to "@end-no-database" for what only a package without one
+# keeps. Delete the region that does not apply and every marker line.
+if [ "$database" -eq 1 ]; then drop="no-database"; else drop="database"; fi
+
+strip_regions() {
+    awk -v drop="$drop" '
+        /^[ \t]*(#|<!--)[ \t]*@(end-)?(no-)?database[ \t]*(-->)?[ \t]*$/ {
+            tag = $0
+            sub(/^[ \t]*(#|<!--)[ \t]*@/, "", tag)
+            sub(/[ \t]*(-->)?[ \t]*$/, "", tag)
+            if (tag ~ /^end-/) {
+                if (region != substr(tag, 5)) { bad = "unexpected @" tag; exit 1 }
+                region = ""
+            } else {
+                if (region != "") { bad = "@" tag " inside @" region; exit 1 }
+                region = tag
+            }
+            next
+        }
+        region != drop { print }
+        END {
+            if (bad == "" && region != "") bad = "@" region " is never closed"
+            if (bad != "") { print FILENAME ":" NR ": " bad > "/dev/stderr"; exit 1 }
+        }
+    ' "$1" > "$1.stripped" && mv "$1.stripped" "$1" || { rm -f "$1.stripped"; exit 1; }
+}
+
+grep -rlE '@(end-)?(no-)?database' . \
+    --exclude-dir=.git --exclude-dir=bin --exclude-dir=vendor \
+    --exclude=TEMPLATE.md 2>/dev/null | while IFS= read -r file; do
+    strip_regions "$file"
+done
+
 rm -rf TEMPLATE.md bin
 
 echo "Initialised dirthara/${package} (Dirthara\\${namespace})."
 echo "Added Dirthara\\${namespace}\\Exception\\${namespace}Exception and HasExceptionContext."
+[ "$database" -eq 1 ] || echo "Left out the database services, drivers, and documentation (--no-database)."
 
 if [ "$git_setup" -eq 0 ]; then
     echo "Skipped git setup (--no-git)."

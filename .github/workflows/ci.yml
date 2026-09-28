@@ -74,19 +74,29 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # @database
       # CI runs the image the README tells you to develop in, against the
       # databases in compose.yaml, so a green run here means the same commands
       # pass on a maintainer's machine. Building PHP and its extensions the same
       # way in both places is the point: the alternative drifts, and the drift
       # only ever shows up here. depends_on waits for every service to be
       # healthy, so the suite never races a database that is still starting.
+      # @end-database
+      # @no-database
+      # CI runs the image the README tells you to develop in, so a green run
+      # here means the same commands pass on a maintainer's machine. Building
+      # PHP the same way in both places is the point: the alternative drifts,
+      # and the drift only ever shows up here.
+      # @end-no-database
       - name: Build and start the development environment
         run: LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose up -d --build php
 
       - name: Report the test environment
         run: |
           docker compose exec -T php php --version
+          # @database
           docker compose exec -T php php -r 'echo "PDO drivers: ", implode(", ", PDO::getAvailableDrivers()), PHP_EOL;'
+          # @end-database
           docker compose ps
 
       - name: Validate composer.json

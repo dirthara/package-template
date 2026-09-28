@@ -17,14 +17,23 @@ and say what is ready.
 
 ## Tests
 Line coverage of `src` must stay at 100%; `composer coverage` fails below it and lists the uncovered lines. Add tests 
-in `tests` with every implementation change. Behaviour that needs a real database belongs in 
-the shared conformance suite in `tests/Integration`, not in a copy per driver.
+in `tests` with every implementation change.
+<!-- @database -->
+Behaviour that needs a real database belongs in the shared conformance suite in `tests/Integration`, not in a copy per
+driver.
+<!-- @end-database -->
 
 ## Development
-Use the PHP container for Composer and PHP commands; see [README.md](README.md). `docker compose up -d php` also starts 
-the PostgreSQL, MySQL, and SQL Server services the tests run against, and waits until each is healthy.
-Use the `Dirthara\__NAMESPACE__` namespace for source and `Dirthara\__NAMESPACE__\Tests` for tests. Declare strict 
-types in every PHP file.
+Use the PHP container for Composer and PHP commands; see [README.md](README.md). Use the `Dirthara\__NAMESPACE__`
+namespace for source and `Dirthara\__NAMESPACE__\Tests` for tests. Declare strict types in every PHP file.
+<!-- @database -->
+`docker compose up -d php` also starts the PostgreSQL, MySQL, and SQL Server services the tests run against, and waits
+until each is healthy.
+<!-- @end-database -->
+<!-- @no-database -->
+This package needs no database, so its image and `compose.yaml` carry none of the template's database drivers or
+services.
+<!-- @end-no-database -->
 
 ## Language
 Write everything in British English: names, messages, comments, documentation, and commit messages. Read and follow 

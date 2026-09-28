@@ -35,7 +35,8 @@ bin/init-package.sh migration "Migrations for the Dirthara framework"
 
 The first argument is the repository name, the second is a one-line
 description with no trailing period. `--namespace` overrides the derived PHP
-namespace, `--year` the copyright year, and `--no-git` skips the git setup.
+namespace, `--year` the copyright year, `--no-database` leaves out the
+databases (see below), and `--no-git` skips the git setup.
 
 That rewrites four placeholders across the scaffold:
 
@@ -93,14 +94,25 @@ and adds `git@github.com:dirthara/<package>` as `origin`. It never commits.
 
 The template assumes a package that runs against all four supported databases,
 because most of them do. For a package that does not, such as
-`dirthara/collection`, remove:
+`dirthara/collection`, pass `--no-database`:
 
-- the `postgres`, `mysql`, and `sqlserver` services and the `depends_on` block
-  in `compose.yaml`;
-- `docker-php-ext-install pdo` and the `pdo_*` extensions in
-  `Docker/Dockerfile`, keeping `xdebug`;
-- the database paragraphs in `README.md` ("Docker development environment" and
-  "Tests") and in `AGENTS.md` ("Tests" and "Development").
+```sh
+bin/init-package.sh collection "Collections for the Dirthara framework" --no-database
+```
+
+That leaves out the `postgres`, `mysql`, and `sqlserver` services and the
+`depends_on` block in `compose.yaml`, the PDO extensions in `Docker/Dockerfile`,
+the PDO driver report in the CI workflow, and the database paragraphs in
+`README.md` and `AGENTS.md`.
+
+The script finds those parts by markers, each on a line of its own inside a
+comment: `@database` to `@end-database` around what only a database package
+keeps, and `@no-database` to `@end-no-database` around what only a package
+without one keeps. The script deletes the region that does not apply and the
+marker lines of the one that does, so no initialised package carries markers.
+When you add something database-specific to the template, wrap it in markers
+the same way, and keep the file valid with both regions present, because the
+template's own CI builds it before any script has run.
 
 ## Keeping the template current
 

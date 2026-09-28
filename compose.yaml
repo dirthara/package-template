@@ -6,6 +6,7 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+  # @database
   postgres:
     image: postgres:18-alpine
     environment:
@@ -42,7 +43,9 @@ services:
       timeout: 5s
       retries: 30
       start_period: 20s
+  # @end-database
   php:
+    # @database
     depends_on:
       postgres:
         condition: service_healthy
@@ -50,6 +53,7 @@ services:
         condition: service_healthy
       sqlserver:
         condition: service_healthy
+    # @end-database
     build:
       context: .
       dockerfile: Docker/Dockerfile
